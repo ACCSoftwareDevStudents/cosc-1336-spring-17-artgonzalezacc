@@ -1,11 +1,18 @@
-from tkinter import NO
-from tkinter.ttk import Treeview
+from tkinter import NO, VERTICAL, RIGHT, Y
+from tkinter.ttk import Treeview, Scrollbar
+from gui.component.listener import Listener
 
 class DataGrid(Treeview):
 
     def __init__(self, parent, headers, data_source):
         Treeview.__init__(self, parent, columns=headers)
         self.parent = parent
+        self['show'] = 'headings'
+        vsb = Scrollbar(parent, orient="vertical", command=self.yview)
+        vsb.grid(row=5, column=3, sticky="ns")
+
+        self.configure(yscrollcommand=vsb.set)
+
         self.data_source = data_source
         self.data_dictionary = data_source.data
         self.headers = headers
@@ -14,6 +21,9 @@ class DataGrid(Treeview):
         self.selection_set('I001')
         self.current_item = 'I001'
         self.bind("<<TreeviewSelect>>", lambda e: self.on_select_record())
+
+        self.data_source.addListener(Listener(self, "<<next_record>>", lambda e: self.on_next_record()))
+        self.data_source.addListener(Listener(self, "<<previous_record>>", lambda e: self.on_previous_record()))
 
     def on_next_record(self):
     
@@ -59,15 +69,15 @@ class DataGrid(Treeview):
 
     def __create_headers(self):
 
-        indx = 0
         for header in self.headers:
-            self.heading(str(indx), text=header)
-            self.column(str(indx), width=100, stretch=NO)
-            indx += 1
+            self.heading(header, text=header)
+            self.column(header, width=125, stretch='YES')
 
     def __insert_rows(self):
 
-        for key in self.data_dictionary:
-            record = self.data_dictionary[key]
-            
-            self.insert('', 'end', text=record[0] , values=record)
+        for record in self.data_dictionary.values():
+            self.insert_row(record)
+
+    def insert_row(self, record):
+        self.insert('', 'end', '' , values=record)
+        #self.insert('', 'end', text=record[0] , values=record)

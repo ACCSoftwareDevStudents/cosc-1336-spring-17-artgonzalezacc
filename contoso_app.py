@@ -40,7 +40,7 @@ class ContosoApp(Tk):
                 current_frame = frame(container, self.school_db)
                 
             self.frames[frame.__name__] = current_frame
-            current_frame.grid(row=0, column=0, sticky="nsew")
+            current_frame.grid(row=0, column=0, sticky="nswe")
 
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]

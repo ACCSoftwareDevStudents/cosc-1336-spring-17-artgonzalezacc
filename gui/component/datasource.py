@@ -6,11 +6,26 @@ class DataSource(object):
         self.parent = parent
         self.keys_list = list(self.data.keys())
         self.keys_list_index = 0
+        self.event_listeners = {}
 
+    def broadcastEvent(self, event_name):
+
+        for listener in self.event_listeners[event_name]:
+            listener.widget.event_generate(event_name, when='tail')
+
+    def addListener(self, listener):
+        listener.widget.bind(listener.event_name, listener.callback)
+        listeners = [listener]
+
+        if listener.event_name in self.event_listeners.keys():
+            self.event_listeners[listener.event_name] += listeners
+        else:
+            self.event_listeners[listener.event_name] = listeners
+        
     def set_current_record(self, key):
         
         self.keys_list_index = self.keys_list.index(key)
-        self.parent.event_generate("<<navigate_record>>", when="tail")
+        self.broadcastEvent("<<navigate_record>>");
 
     def current_record(self):
 
@@ -20,17 +35,16 @@ class DataSource(object):
 
         if(self.keys_list_index > 0):
             self.keys_list_index -= 1
-            self.parent.event_generate("<<previous_record>>", when="tail")
+            self.broadcastEvent("<<previous_record>>");
 
     def next_record(self):
 
         if(self.keys_list_index < len(self.keys_list) - 1):
             self.keys_list_index += 1
-            self.parent.event_generate("<<next_record>>", when="tail")
+            self.broadcastEvent("<<next_record>>");
 
     def request_update(self):
-        
-        self.parent.event_generate("<<update_record>>", when="tail")
+        self.broadcastEvent("<<update_record>>");
 
     def request_delete(self):
         
