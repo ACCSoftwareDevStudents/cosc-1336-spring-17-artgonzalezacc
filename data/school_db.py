@@ -20,6 +20,8 @@ class SchoolDB:
             self.enrollments = self.school_initializer.enrollments
 
     def save_data(self):
+        for e in self.enrollments.values():
+            print(e.enroll_id, e.course.title, e.student.first_name, e.grade)
 
         self.file = open(self.file_name, 'wb')
         pickle.dump(self.enrollments, self.file)

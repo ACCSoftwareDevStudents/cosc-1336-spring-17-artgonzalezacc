@@ -55,6 +55,7 @@ class EnrollmentFrame(Frame):
         search_string = SearchDialog(self, "Enter Enroll Id: ").show()
 
         enrollment_list = self.data_source.data[int(search_string)]
+        
         self.data_source.set_current_record(enrollment_list[0])
         self.data_grid.on_set_record(enrollment_list[0])
 
@@ -63,7 +64,7 @@ class EnrollmentFrame(Frame):
         enrollment_list = self.data_source.data[int(self.id_text_box.value.get())]
         enrollment_list[3] = self.grade_text_box.value.get()
 
-        enrollment = self.school_db.school_initializer.enrollments[enrollment_list[0]]
+        enrollment = self.school_db.enrollments[enrollment_list[0]]
         enrollment.grade = self.grade_text_box.value.get()
 
         self.data_source.update_record(enrollment_list)

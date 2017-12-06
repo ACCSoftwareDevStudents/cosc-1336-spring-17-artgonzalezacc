@@ -59,10 +59,10 @@ class DataGrid(Treeview):
     def on_set_record(self, key):
 
         children = self.get_children('')
-
+        
         for child in children:
             text = self.item(child, 'text')
-
+            
             if text == key:
                 self.selection_set(child)
 
@@ -79,5 +79,4 @@ class DataGrid(Treeview):
             self.insert_row(record)
 
     def insert_row(self, record):
-        self.insert('', 'end', '' , values=record)
-        #self.insert('', 'end', text=record[0] , values=record)
+        self.insert('', 'end', text=record[0] , values=record)
